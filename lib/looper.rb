@@ -29,7 +29,6 @@ module Looper
         q = me.queue
         while (true) do
           m = q.dequeue_message
-          puts "picked up #{m.id} message from queue"
           return if (m.handler.nil?)
           m.handler.dispatch_message(m)
         end
@@ -38,7 +37,6 @@ module Looper
 
     def quit
       m = Message.obtain()
-      puts "in Looper::quit: enqueue quit message #{m}"
       @queue.enqueue_message(m, 0)
     end
   end

@@ -23,9 +23,6 @@ module Looper
       initialize(handler, what, arg1, arg2)
     end
 
-    # static bool obtain(Message& message, Handler& handler);
-    # static bool obtain(Message& message, Handler& handler, int16_t what);
-
     def self.obtain()
       @@pool_mutex.synchronize do
         if @pool != nil
@@ -38,17 +35,10 @@ module Looper
       end
       Message.new
     end
-    def self.obtain_with_message(message, handler)
-      return false unless (0 == message.exec_timestamp)
-      message.reset!(handler)
-      true
-    end
 
-    def self.obtain_with_message_and_what(message, handler, what)
-      puts "message: #{message.inspect}"
-      puts "message.exec_timestamp = #{message.exec_timestamp}"
+    def self.reuse(message, handler, what = nil, arg1 = nil, arg2 = nil)
       return false unless (0 == message.exec_timestamp)
-      message.reset!(handler, what)
+      message.reset!(handler, what, arg1, arg2)
       true
     end
 
@@ -75,7 +65,9 @@ module Looper
         @when = 0
         @target = nil
         @data = nil
-      end
+    end
+
+    private :recycle, :clear_for_recycle
   end
 end
 

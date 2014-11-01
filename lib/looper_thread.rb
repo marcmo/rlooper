@@ -12,13 +12,10 @@ module Looper
     end
 
     def run
-      p "run(#{Thread.current})"
       Looper::prepare()
-      puts "looper is prepared in thread #{Thread.current}"
       @mutex.synchronize do
         @looper = Looper::my_looper()
         @handler = Handler.new
-        p "broadcast(#{Thread.current})"
         @cond_var.broadcast()
       end
       Looper::loop
@@ -33,9 +30,7 @@ module Looper
     def get_looper
       @mutex.synchronize do
         if (!@is_done && @looper == nil)
-          if @looper.nil? then p "looper was nil, waiting (#{Thread.current})" end
           @cond_var.wait(@mutex)
-          p "done waiting(#{Thread.current})"
         end
       end
       @looper

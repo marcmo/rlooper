@@ -41,7 +41,6 @@ module Looper
     def dequeue_message()
       while true do
         @mutex.synchronize do
-          puts "..............in dequeue_message"
           now = Time.now.nsec
           m = get_next_message(now)
           if m != nil
@@ -65,7 +64,6 @@ module Looper
       if (m != nil)
         if now_ns >= m.exec_timestamp
           @head_message = m.next_message
-          puts ">>>>>> dequeue #{m.id}"
           return m
         end
       end
